@@ -12,8 +12,27 @@
     />
     <title>Countries App</title>
   </head>
-  <body>
-
+  <body class="darkmode__background_D">
+    <header class="header darkmode__background_L">
+      <h1 class="header__tittle darkmode__text">Where in the world?</h1>
+      <div id="darkmodeBtn" class="header__darkmode">
+        <p class="darkmodeBtn__text darkmode__text">Dark Mode</p>
+      </div>
+    </header>
+    <nav class="mainNav">
+      <input id="searchBar" class="mainNav__search darkmode__background_L darkmode__text" type="text" placeholder="Search for a country...">
+      <select id="region" class="mainNav__select darkmode__background_L darkmode__text">
+        <option id="placeHolder" class="mainNav__select_value darkmode__text" value="">Filter by Region</option>
+        <option class="mainNav__select_value darkmode__text" value="Africa">Africa</option>
+        <option class="mainNav__select_value darkmode__text" value="America">America</option>
+        <option class="mainNav__select_value darkmode__text" value="Asia">Asia</option>
+        <option class="mainNav__select_value darkmode__text" value="Europe">Europe</option>
+        <option class="mainNav__select_value darkmode__text" value="Oceania">Oceania</option>
+      </select>
+    </nav>
+    <main id="mainContainer" class="countries__container darkmode__background_D">
+    </main>
     <script src="./js/script.js" type="module"></script>
+    <script src="./js/index.js" type="module"></script>
   </body>
 </html>
