@@ -1,16 +1,29 @@
-import { moonIcon, arrowIcon } from '../common/icons/theme-icons.js';
-import { darkMode, darkmodeBtnListener } from '../js/script.js';
+import { arrowIcon } from '../common/icons/theme-icons.js';
+import { darkMode, darkmodeBtnListener} from '../js/script.js';
 
 const mainContainer = document.getElementById('mainContainer');
 const backBtn = document.getElementById('backBtn');
 
+// Base object for the country to render.
+const countryData = {
+    flag: "",
+    name: "",
+    nativeName: "",
+    population: "",
+    region: "",
+    subRegion: "",
+    capital: "",
+    topLevelDomain: "",
+    currencies: [],
+    languages: [],
+    countryBorders: []
+}
 
 darkMode();
-
 getBackEvent();
-
 getCountries(JSON.parse(localStorage.getItem('country')));
 
+// Function to control the back button to get to index webpage.
 function getBackEvent() {
     arrowIcon(backBtn, '15px', 'black');
 
@@ -19,7 +32,10 @@ function getBackEvent() {
     })
 }
 
-function getCountries(variant, regions) {
+
+// Almost the shame that one on scripts.js but simplier. We can add this to that one, but it will end
+// way too convoluted.
+function getCountries(variant) {
     const baseLink = "https://restcountries.com/v3.1/";
     let link = baseLink + 'name/' + variant;
 
@@ -32,71 +48,72 @@ function getCountries(variant, regions) {
         }
     })
     .then((data) => {
-        showContries(data);
+        setCountryData(data[0]);
+        showContries();
     })
     .catch((error) => {
         console.log('error', error);
     })
 }
 
-function showContries(data) { 
+// We give the values of the country we get to the object.
+function setCountryData(country) {
+    countryData.flag = country.flags.svg;
+    countryData.name = country.name.common + '.';
+    countryData.nativeName = Object.values(country.name.nativeName)[Object.keys(country.name.nativeName).length - 1].common + '.';
+    countryData.population = country.population.toLocaleString() + '.';
+    countryData.region = country.region + '.';
+    countryData.subRegion = country.subRegion + '.';
+    countryData.capital = country.capital + '.';
+    countryData.topLevelDomain = country.tld;
+    Object.values(country.currencies).forEach(element => countryData.currencies.push(' ' + element.name)); 
+    countryData.currencies = countryData.currencies.join(', ') + '.'; 
+    Object.values(country.languages).forEach(element => countryData.languages.push(' ' + element));
+    countryData.languages = countryData.languages.join(', ') + '.';
+    countryData.countryBorders = country.borders;  
+}
+
+// Function to render the country and the needed values. It has a nested function searchBorders and renderBorders
+// to look for the borders of the country, as we only recieve a reference and we need the full name. Once it gets all, renders them
+// with desired format.
+function showContries() { 
     mainContainer.innerHTML = '';
-    renderCountry(data);
+ 
+    renderCountry();
+    searchBorders(); 
 
-    function renderCountry(country) {
+    function renderCountry() {
         const countryCard = document.createElement('article');
-
         countryCard.className = 'countryBig';
-
-        const name = country[0].name.common + '.';
-        const nativeName = Object.values(country[0].name.nativeName)[Object.keys(country[0].name.nativeName).length - 1].common + '.';
-        const population = country[0].population.toLocaleString() + '.';
-        const region = country[0].region + '.';
-        const subRegion = country[0].subregion + '.';
-        const capital = country[0].capital + '.';
-        const topLevelDomain = country[0].tld;
-        let currencies = [];
-        
-        Object.values(country[0].currencies).forEach(element => {
-            currencies.push(' ' + element.name);
-        });    
-        currencies = currencies.join() + '.';
-
-        let languages = [];
-        
-        Object.values(country[0].languages).forEach(element => {
-            languages.push(' ' + element);
-        });
-        languages = languages.join() + '.';
-
+ 
         countryCard.innerHTML = `
-        <img class='countryBig__flag' src=${country[0].flags.svg} />
+        <img class='countryBig__flag' src=${countryData.flag} />
         <div class='data__wrap'>
-            <p class='countryBig__text countryBig__text--name darkmode__text'><span class='darkmode__text'>${name}</span></p>
+            <p class='countryBig__text countryBig__text--name darkmode__text'><span class='darkmode__text'>${countryData.name}</span></p>
             <ul class='countryBig__list'>
                 <li>
-                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Native Name:</span> ${nativeName}</p>
+                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Native Name:</span> ${countryData.nativeName}</p>
                 </li>
                 <li>
-                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Population:</span> ${population}</p>
+                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Population:</span> ${countryData.population}</p>
                 </li>
                 <li>
-                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Region:</span> ${region}</p>
+                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Region:</span> ${countryData.region}</p>
                 </li>
                 <li>
-                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Sub Region:</span> ${subRegion}</p>
+                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Sub Region:</span> ${countryData.subRegion}</p>
                 </li>
                 <li>
-                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Capital:</span> ${capital}</p>
+                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Capital:</span> ${countryData.capital}</p>
                 </li>
                 <li>
-                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Top Level Domain:</span> ${topLevelDomain}</p>
+                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Top Level Domain:</span> ${countryData.topLevelDomain}</p>
                 </li>
                 <li>
-                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Currencies:</span> ${currencies}</p>
+                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Currencies:</span> ${countryData.currencies}</p>
                 </li>
                 <li>
-                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Languages:</span> ${languages}</p>
+                    <p class='countryBig__text darkmode__text'><span class='darkmode__text'>Languages:</span> ${countryData.languages}</p>
                 </li>
             </ul>
             <div class='countryBig__borderCountries'>
@@ -107,59 +124,56 @@ function showContries(data) {
         </div>
         `;
 
-        mainContainer.appendChild(countryCard);
+        mainContainer.appendChild(countryCard);          
+    }
 
-        searchBorders();
+    function searchBorders() {
+        if (countryData.countryBorders) {
+            let countryBorders = Object.values(countryData.countryBorders);
 
-        function searchBorders() {
-            if (country[0].borders) {
-                let countryBorders = Object.values(country[0].borders);
+            const countryBordersUrl = countryBorders.map((item) => {
+                return 'https://restcountries.com/v3.1/alpha/' + item;
+            });
 
-                const countryBordersUrl = countryBorders.map((item) => {
-                    return 'https://restcountries.com/v3.1/alpha/' + item;
-                });
-    
-                function getCountryName(url) {
-                    return fetch(url)
-                    .then((response) => {
-                        if(!response.ok) {
-                            console.log('Error', response.status);
-                        } else {
-                            return response.json();
-                        }
-                    })
-                    .then((data) => {
-                        return data;
-                    });
-                }
-        
-                Promise.all(countryBordersUrl.map(getCountryName))
-                .then((data) => {
-                    Object.values(data);
-    
-                    data.forEach(item => {
-                        renderBorders(item[0].name.common);
-                    })
-                })           
-                .catch((error) => {
-                    console.log('Error', error);
+            function getCountryName(url) {
+                return fetch(url)
+                .then((response) => {
+                    if(!response.ok) {
+                        console.log('Error', response.status);
+                    } else {
+                        return response.json();
+                    }
                 })
-
-            } else {
-                renderBorders('None');
+                .then((data) => {
+                    return data;
+                });
             }
-        }
+    
+            Promise.all(countryBordersUrl.map(getCountryName))
+            .then((data) => {     
+                countryData.countryBorders = data;
+                renderBorders();
+            })           
+            .catch((error) => {
+                console.log('Error', error);
+            })
 
-        function renderBorders(data) {
+        } else {
+            renderBorders('None');
+        }
+    }
+
+    function renderBorders() {
+        countryData.countryBorders.forEach(item => {
             const borderList = document.getElementById('borderList');
             const borderItem = document.createElement('li');
             borderItem.className = 'countryBig__borderCountries__text darkmode__text darkmode__background_L';
-
-            borderItem.textContent = data;
-
+    
+            borderItem.textContent = item[0].name.common;
+    
             borderList.appendChild(borderItem);
         
             darkmodeBtnListener();
-        }
+        })    
     }
 }

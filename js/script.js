@@ -1,5 +1,6 @@
-import { moonIcon, arrowIcon } from '../common/icons/theme-icons.js';
+import { moonIcon } from '../common/icons/theme-icons.js';
 
+// Intializes the localStorage for darl mode and then calls for DOM elements to change.
 function darkMode() {
     if(localStorage.getItem('darkmode') === null) {
         localStorage.setItem('darkmode', JSON.stringify(false))
@@ -15,6 +16,7 @@ function darkMode() {
     getDarkmodeDomElements();
 }
 
+// Adds an event to the virtual button to change modes.
 function darkmodeBtnListener() {
     getDarkmodeDomElements();
 
@@ -27,6 +29,7 @@ function darkmodeBtnListener() {
     })
 }
 
+// Gets reference for all dom elements that need to change and stores them in a nested array.
 function getDarkmodeDomElements() {
     const darkmodeBackDark = document.querySelectorAll('.darkmode__background_D');
     const darkmodeBackLight = document.querySelectorAll('.darkmode__background_L');
@@ -36,6 +39,7 @@ function getDarkmodeDomElements() {
     changeState(darkSelectors);  
 }
 
+// Goes throug each element that needs to change and add/removes a class to change the CSS.
 function changeState(domElementsList) {
     let darkModeState = JSON.parse(localStorage.getItem('darkmode'));
 
@@ -48,6 +52,7 @@ function changeState(domElementsList) {
     }
 }
 
+// To get the regions of the world from the selector values.
 function getRegions(regionSelect, regions) {
     if (regionSelect !== undefined) {
         const selectOptions = regionSelect.options;
@@ -58,6 +63,7 @@ function getRegions(regionSelect, regions) {
     }
 }
 
+// Creates a listener on the parent of each country card to read for a click. Then sets a local storage value and links to the countryData webpage.
 function setListener(domElement) {
     domElement.addEventListener('click', event => {
         const countryItem = event.target.closest('article');
@@ -73,6 +79,7 @@ function setListener(domElement) {
     })
 }
 
+// Function to get countries as needed. It changes the fetch link for default, region, and only one.
 function getCountries(variant, regions) {
     const baseLink = "https://restcountries.com/v3.1/";
     let link;
@@ -101,7 +108,7 @@ function getCountries(variant, regions) {
     })
 }
 
-// No need to export this one. Is only referenced inside this scripts, so always can be called from inside.
+// This function renders the value obtained on getCountries.
 function showContries(data) { 
     mainContainer.innerHTML = '';
 
@@ -127,6 +134,7 @@ function showContries(data) {
     darkmodeBtnListener();
 }
 
+// Function to control the search bar.
 function searchCountry(searchBar) {
     searchBar.addEventListener('keydown', enterPress)
 
@@ -141,6 +149,7 @@ function searchCountry(searchBar) {
         } 
 }
 
+// Function to control the region select search.
 function regionSearch(regionSelect, regions) {
     if(regionSelect) {
         let placeHolder = document.getElementById('placeHolder');
