@@ -1,4 +1,4 @@
-import { moonIcon } from '../common/icons/theme-icons.js';
+import { moonIcon } from '/../common/icons/theme-icons.js';
 
 // Intializes the localStorage for darl mode and then calls for DOM elements to change.
 function darkMode() {
@@ -13,20 +13,21 @@ function darkMode() {
         moonIcon(darkmodeBtn, '13px', 'black');
     } 
 
+    darkmodeBtnListener();
     getDarkmodeDomElements();
 }
 
 // Adds an event to the virtual button to change modes.
 function darkmodeBtnListener() {
-    getDarkmodeDomElements();
+    darkmodeBtn.addEventListener('click', listener);
 
-    darkmodeBtn.addEventListener('click', () => {
+    function listener() {
         let darkModeState = JSON.parse(localStorage.getItem('darkmode'));
         darkModeState = !darkModeState;
         localStorage.setItem('darkmode', JSON.stringify(darkModeState));
 
         getDarkmodeDomElements();
-    })
+    }
 }
 
 // Gets reference for all dom elements that need to change and stores them in a nested array.
@@ -130,8 +131,8 @@ function showContries(data) {
         `
         mainContainer.appendChild(countryCard);
     }
-
-    darkmodeBtnListener();
+ 
+    getDarkmodeDomElements();
 }
 
 // Function to control the search bar.
@@ -168,4 +169,4 @@ function regionSearch(regionSelect, regions) {
 }
 
 export { getRegions, setListener, getCountries, searchCountry, regionSearch }
-export { darkMode, darkmodeBtnListener }
+export { darkMode, getDarkmodeDomElements }

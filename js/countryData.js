@@ -1,5 +1,5 @@
-import { arrowIcon } from '../common/icons/theme-icons.js';
-import { darkMode, darkmodeBtnListener} from '../js/script.js';
+import { arrowIcon } from '/../common/icons/theme-icons.js';
+import { darkMode, getDarkmodeDomElements} from '/../js/script.js';
 
 const mainContainer = document.getElementById('mainContainer');
 const backBtn = document.getElementById('backBtn');
@@ -163,17 +163,26 @@ function showContries() {
         }
     }
 
-    function renderBorders() {
-        countryData.countryBorders.forEach(item => {
+    function renderBorders(placeHolder) {
+        if(placeHolder) {
+            render(placeHolder);
+        } else {
+            countryData.countryBorders.forEach(item => {
+                const countryName = item[0].name.common;
+                render(countryName);     
+            })  
+        }
+         
+
+        function render(item) {
             const borderList = document.getElementById('borderList');
             const borderItem = document.createElement('li');
-            borderItem.className = 'countryBig__borderCountries__text darkmode__text darkmode__background_L';
-    
-            borderItem.textContent = item[0].name.common;
-    
+
+            borderItem.className = 'countryBig__borderCountries__text darkmode__text darkmode__background_L'; 
+            borderItem.textContent = item;   
             borderList.appendChild(borderItem);
-        
-            darkmodeBtnListener();
-        })    
+        }
+
+        getDarkmodeDomElements();
     }
 }
